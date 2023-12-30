@@ -15,9 +15,12 @@ RED = (250, 50, 50)
 
 FPS = 60
 
+# 파이썬3 - super().__init__() 
+# 파이썬2 - super(해당 클래스,self).__init__() (파이썬3에서도 사용가능)
+
 class Fighter(pygame.sprite.Sprite):
     def __init__(self):
-        super(Fighter, self).__init__()
+        super().__init__() # super(Fighter, self).__init__()
         self.image = pygame.image.load('./resource/fighter.png')
         self.rect = self.image.get_rect()
         self.rect.x = int(WINDOW_WIDTH / 2)
@@ -29,8 +32,8 @@ class Fighter(pygame.sprite.Sprite):
         self.rect.x += self.dx
         self.rect.y += self.dy
 
-        if self.rect < 0 or self.rect.x + self.rect.width > WINDOW_WIDTH:
-            self.rect.x -= self.dx
+        if self.rect.x < 0 or self.rect.x + self.rect.width > WINDOW_WIDTH:  #
+            self.rect.x -= self.dx 
 
         if self.rect.y < 0 or self.rect.y + self.rect.height > WINDOW_HEIGHT:
             self.rect.y -= self.dy
@@ -46,7 +49,7 @@ class Fighter(pygame.sprite.Sprite):
             
 class Missile(pygame.sprite.Sprite):
     def __init__(self, xpos, ypos, speed):
-        super(Missile, self).__init__()
+        super().__init__() # super(Missile, self).__init__()
         self.image = pygame.image.load("./resource/missile.png")
         self.rect = self.image.get_rect()
         self.rect.x = xpos
@@ -69,7 +72,7 @@ class Missile(pygame.sprite.Sprite):
             
 class Rock(pygame.sprite.Sprite):
     def __init__(self, xpos, ypos, speed):
-        super(Rock, self).__init__()
+        super().__init__() # super(Rock, self).__init__() # python version 3, 2
         rock_images = (
             "./resource/rock01.png",
             "./resource/rock02.png",
@@ -115,7 +118,7 @@ class Rock(pygame.sprite.Sprite):
         if self.rect.y > WINDOW_HEIGHT:
             return True
         
-
+# 메소드 설정
 def draw_text(text, font, surface, x, y, main_color):
     text_obj  = font.render(text, True, main_color)
     text_rect = text_obj.get_rect()
@@ -134,6 +137,8 @@ def occur_explosion(surface, x, y):
     explosion_sound = pygame.mixer.Sound(random.choice(explosion_sounds))
     explosion_sound.play()
 
+
+# 게임 시작 진행 종료
 def game_loop():
     default_font = pygame.font.Font("./resource/NanumGothic.ttf", 28)
     background_image = pygame.image.load("./resource/background.png")
@@ -144,6 +149,7 @@ def game_loop():
     
     fighter = Fighter()
     missiles = pygame.sprite.Group()
+    
     rocks = pygame.sprite.Group()
 
     occur_prob = 40
@@ -163,6 +169,7 @@ def game_loop():
                 elif event.key == pygame.K_DOWN:
                     fighter.dy += 5
                 elif event.key == pygame.K_SPACE:
+                    # global missile
                     missile = Missile(fighter.rect.centerx, fighter.rect.y, 10)
                     missile.launch()
                     missiles.add(missile)
@@ -172,6 +179,12 @@ def game_loop():
                     fighter.dx =  0
                 elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     fighter.dy =  0
+
+            # X 눌렀을 때 종료
+            if event.type == QUIT:
+                pygame.quit()
+                
+
 
         screen.blit(background_image, background_image.get_rect())
 
@@ -203,8 +216,8 @@ def game_loop():
 
         rocks.update()
         rocks.draw(screen)
-        missile.update()
-        missile.draw(screen)
+        missiles.update()  ############################################################
+        missiles.draw(screen)
         fighter.update()
         fighter.draw(screen)
         pygame.display.flip()
