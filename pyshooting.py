@@ -29,8 +29,8 @@ class Fighter(pygame.sprite.Sprite):
         self.rect.x += self.dx
         self.rect.y += self.dy
 
-        if self.rect < 0 or self.rect.x + self.rect.width > WINDOW_WIDTH:
-            self.rect.x -= self.dx
+        if self.rect.x < 0 or self.rect.x + self.rect.width > WINDOW_WIDTH:  #
+            self.rect.x -= self.dx 
 
         if self.rect.y < 0 or self.rect.y + self.rect.height > WINDOW_HEIGHT:
             self.rect.y -= self.dy
@@ -144,6 +144,7 @@ def game_loop():
     
     fighter = Fighter()
     missiles = pygame.sprite.Group()
+    
     rocks = pygame.sprite.Group()
 
     occur_prob = 40
@@ -163,6 +164,7 @@ def game_loop():
                 elif event.key == pygame.K_DOWN:
                     fighter.dy += 5
                 elif event.key == pygame.K_SPACE:
+                    # global missile
                     missile = Missile(fighter.rect.centerx, fighter.rect.y, 10)
                     missile.launch()
                     missiles.add(missile)
@@ -203,8 +205,8 @@ def game_loop():
 
         rocks.update()
         rocks.draw(screen)
-        missile.update()
-        missile.draw(screen)
+        missiles.update()  ############################################################
+        missiles.draw(screen)
         fighter.update()
         fighter.draw(screen)
         pygame.display.flip()
